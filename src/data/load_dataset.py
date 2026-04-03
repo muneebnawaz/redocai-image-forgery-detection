@@ -132,6 +132,10 @@ def load_dataset(dataset_root):
 
     df = pd.DataFrame(rows)
 
+    df["_case_id_sort"] = pd.to_numeric(df["case_id"])
+    df = df.sort_values(["_case_id_sort", "case_id"]).drop(columns="_case_id_sort")
+    df = df.reset_index(drop=True)
+
     return df
 
 
