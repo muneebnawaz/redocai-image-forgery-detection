@@ -37,11 +37,26 @@ class BiomedicalForgeryDataset(Dataset):
             mask_path = Path(row["mask_paths"][0])
             mask = np.load(mask_path)
 
-            if mask.shape != (height, width):
+            if mask.ndim == 2:
+                if mask.shape != (height, width):
+                    raise ValueError(
+                        f"Mask shape {mask.shape} does not match image shape {(height, width)} "
+                        f"for case_id={row['case_id']}"
+                    )
+
+            elif mask.ndim == 3:
+                if mask.shape[1:] != (height, width):
+                    raise ValueError(
+                        f"Mask spatial shape {mask.shape[1:]} does not match image shape {(height, width)} "
+                        f"for case_id={row['case_id']}"
+                    )
+
+                mask = np.any(mask > 0, axis=0).astype(np.uint8)
+
+            else:
                 raise ValueError(
-                    f"Mask shape {mask.shape} does not match image shape {(height, width)} "
-                    f"for case_id={row['case_id']}"
-                )
+                    f"Unsupported mask shape {mask.shape} for case_id={row['case_id']}"
+                    )
         else:
             mask = np.zeros((height, width), dtype=np.uint8)
 
