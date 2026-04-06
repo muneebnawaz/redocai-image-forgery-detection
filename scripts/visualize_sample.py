@@ -36,14 +36,14 @@ def visualize_sample(dataset, idx):
     # Create figure
     fig, axes = plt.subplots(1, 3, figsize=(15, 5))
 
-    # 1. Original image
+    # 1. Image
     axes[0].imshow(image)
-    axes[0].set_title("Original Image")
+    axes[0].set_title("Processed Image")
     axes[0].axis("off")
 
     # 2. Mask
     axes[1].imshow(mask, cmap="gray")
-    axes[1].set_title("Mask")
+    axes[1].set_title("Processed Mask")
     axes[1].axis("off")
 
     # 3. Overlay
