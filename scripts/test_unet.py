@@ -4,6 +4,7 @@ from torch.utils.data import DataLoader
 from src.data.load_dataset import load_dataset
 from src.data.dataset import BiomedicalForgeryDataset
 from src.models.unet_baseline import UNet
+from src.losses.segmentation_losses import BCEDiceLoss
 
 
 def main():
@@ -38,12 +39,16 @@ def main():
 
     outputs = model(images)
 
+    criterion = BCEDiceLoss()
+    loss = criterion(outputs, masks)
+
     print("Input image shape:", images.shape)
     print("Target mask shape:", masks.shape)
     print("Model output shape:", outputs.shape)
     print("Output dtype:", outputs.dtype)
     print("Output min:", outputs.min().item())
     print("Output max:", outputs.max().item())
+    print("Loss:", loss.item())
 
 
 if __name__ == "__main__":

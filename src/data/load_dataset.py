@@ -77,7 +77,7 @@ def _build_image_rows(image_folder, image_type, split, mask_lookup=None):
                 "num_masks": num_masks,
                 "split": split,
                 "image_type": image_type,
-                "has_mask": has_mask,
+                "has_mask": has_mask
             }
         )
 
