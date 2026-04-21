@@ -30,6 +30,9 @@ def main():
     checkpoint_dir = Path("artifacts/checkpoints")
     checkpoint_dir.mkdir(parents=True, exist_ok=True)
 
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(f"Using device: {device}")
+
     # -------------------------
     # Build dataframe
     # -------------------------
@@ -37,7 +40,7 @@ def main():
 
     if debug:
         df = df.sample(n=min(debug_num_samples, len(df)), random_state=42).reset_index(drop=True)
-        print(f"Debug mode: using {len(df)} samples")
+        print(f"Debug mode: using {len(df)} samples")  
 
     # -------------------------
     # Dataset
@@ -70,7 +73,7 @@ def main():
         batch_size=batch_size,
         shuffle=True,
         num_workers=num_workers,
-        pin_memory=True,
+        pin_memory=(device.type == "cuda"),
     )
 
     val_loader = DataLoader(
@@ -78,13 +81,13 @@ def main():
         batch_size=batch_size,
         shuffle=False,
         num_workers=num_workers,
-        pin_memory=True,
+        pin_memory=(device.type == "cuda"),
     )
 
     # -------------------------
     # Model, loss, optimizer
     # -------------------------
-    model = UNet(in_channels=3, out_channels=1)
+    model = UNet(in_channels=3, out_channels=1).to(device)
     criterion = BCEDiceLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
